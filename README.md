@@ -1,7 +1,7 @@
 # [dsame](https://dsame.xoynq.com)
 **dsame** is a program to decode [EAS](http://en.wikipedia.org/wiki/Emergency_Alert_System)/[SAME](http://en.wikipedia.org/wiki/Specific_Area_Message_Encoding) (Emergency Alert System/Specific Area Message Encoding) alert messages. These messages are primarily used by the National Weather Service for weather-related warnings. **dsame** will decode a demodulated message, filter by SAME ([US](http://www.nws.noaa.gov/nwr/coverage/county_coverage.html)/[CA](http://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=E5A4F19C-1)) and/or event code, provide readable text, or run an external program.
 
-THIS fork also adds SASMEX (Mexican system for seismic alerts) compatibility.
+**THIS fork also adds SASMEX (Mexican system for seismic alerts) compatibility.**
 
 **DO NOT RELY ON THIS PROGRAM WHEN LOSS, DAMAGE, INJURY OR DEATH MAY OCCUR!**
 
