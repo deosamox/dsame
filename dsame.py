@@ -39,13 +39,13 @@ def format_error(info=''):
 
 def time_str(x, type='hour'):
     if x==1:
-        return ''.join([str(x),' ',type])
+        return ''.join([str(x), ' ', type])
     elif x>=2:
-        return ''.join([str(x),' ',type,'s'])
+        return ''.join([str(x), ' ', type, 's'])
     
 def get_length(TTTT):
-    hh,mm=TTTT[:2],TTTT[2:]  
-    return ' '.join(filter(None, (time_str(int(hh)), time_str(int(mm), type='minute'))))
+    hh, mm=TTTT[:2], TTTT[2:]  
+    return ' '.join([_f for _f in (time_str(int(hh)), time_str(int(mm), type='minute')) if _f])
 
 def county_decode(input, COUNTRY):
     """Convert SAME county/geographic code to text list"""
@@ -59,7 +59,7 @@ def county_decode(input, COUNTRY):
             county='ALL'
         else:
             county=defs.US_SAME_CODE[SSCCC]
-        return [' '.join(filter(None, (SAME__LOC[P], county))), defs.US_SAME_AREA[SS]]
+        return [' '.join([_f for _f in (SAME__LOC[P], county) if _f]), defs.US_SAME_AREA[SS]]
     else:
         if CCC=='000':
             county='ALL'
@@ -125,7 +125,7 @@ def check_watch(watch_list, PSSCCC_list, event_list, EEE):
         watch_list=PSSCCC_list
     if not event_list:
         event_list=[EEE] 
-    w, p = [],[]
+    w, p = [], []
     w += [item[1:] for item in watch_list]
     p += [item[1:] for item in PSSCCC_list]
     if (set(w) & set(p)) and EEE in event_list:
@@ -137,7 +137,7 @@ def kwdict(**kwargs):
     return kwargs
 
 def format_message(command, ORG='WXR', EEE='RWT',PSSCCC=[],TTTT='0030',JJJHHMM='0010000', STATION=None, TYPE=None, LLLLLLLL=None, COUNTRY='US', LANG='EN', MESSAGE=None,**kwargs):
-    return command.format(ORG=ORG, EEE=EEE, TTTT=TTTT, JJJHHMM=JJJHHMM, STATION=STATION, TYPE=TYPE, LLLLLLLL=LLLLLLLL, COUNTRY=COUNTRY, LANG=LANG, event=get_event(EEE), type=get_indicator(EEE), end=fn_dt(alert_end(JJJHHMM,TTTT)), start=fn_dt(alert_start(JJJHHMM)), organization=defs.SAME__ORG[ORG]['NAME'][COUNTRY], PSSCCC='-'.join(PSSCCC), location=get_location(STATION, TYPE), date=fn_dt(datetime.datetime.now(),'%c'), length=get_length(TTTT), seconds=alert_length(TTTT), MESSAGE=MESSAGE, **kwargs)
+    return command.format(ORG=ORG, EEE=EEE, TTTT=TTTT, JJJHHMM=JJJHHMM, STATION=STATION, TYPE=TYPE, LLLLLLLL=LLLLLLLL, COUNTRY=COUNTRY, LANG=LANG, event=get_event(EEE), type=get_indicator(EEE), end=fn_dt(alert_end(JJJHHMM, TTTT)), start=fn_dt(alert_start(JJJHHMM)), organization=defs.SAME__ORG[ORG]['NAME'][COUNTRY], PSSCCC='-'.join(PSSCCC), location=get_location(STATION, TYPE), date=fn_dt(datetime.datetime.now(), '%c'), length=get_length(TTTT), seconds=alert_length(TTTT), MESSAGE=MESSAGE, **kwargs)
  
 def readable_message(ORG='WXR',EEE='RWT',PSSCCC=[],TTTT='0030',JJJHHMM='0010000',STATION=None, TYPE=None, LLLLLLLL=None, COUNTRY='US', LANG='EN'):
     import textwrap
@@ -152,9 +152,9 @@ def readable_message(ORG='WXR',EEE='RWT',PSSCCC=[],TTTT='0030',JJJHHMM='0010000'
             output=defs.MSG__TEXT[LANG]['MSG2'].format(conjunction='' if idx == 0 else defs.MSG__TEXT[LANG]['AND'], state=state, division=DIVISION) 
             MSG+=[''.join(output)]
             current_state=state
-        MSG+=[defs.MSG__TEXT[LANG]['MSG3'].format(county=county if county != state else defs.MSG__TEXT[LANG]['ALL'].upper(),punc=',' if idx !=len(PSSCCC)-1 else '.')]
+        MSG+=[defs.MSG__TEXT[LANG]['MSG3'].format(county=county if county != state else defs.MSG__TEXT[LANG]['ALL'].upper(), punc=',' if idx !=len(PSSCCC)-1 else '.')]
     MSG+=[defs.MSG__TEXT[LANG]['MSG4']]
-    MSG+=[''.join(['(',LLLLLLLL,')'])]
+    MSG+=[''.join(['(', LLLLLLLL, ')'])]
     output=textwrap.wrap(''.join(MSG), 78)
     for item in output:
         printf(item)
@@ -168,13 +168,13 @@ def clean_msg(same):
     if msgidx != -1:
         same=same[msgidx:]                                              # Left Offset 
     same = ''.join(same.split())                                        # Remove whitespace
-    same = ''.join(filter(lambda x: x in valid_chars, same))       # Valid ASCII codes only
+    same = ''.join([x for x in same if x in valid_chars])       # Valid ASCII codes only
     slen= len(same)-1
     if same[slen] !='-':
         ridx=same.rfind('-') 
         offset = slen-ridx
         if (offset <= 8):
-            same=''.join([same.ljust(slen+(8-offset)+1,'?'), '-'])      # Add final dash and/or pad location field
+            same=''.join([same.ljust(slen+(8-offset)+1, '?'), '-'])      # Add final dash and/or pad location field
               
     return same
    
@@ -186,39 +186,39 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
     msgidx=same.find('ZCZC')
     if msgidx != -1:
         logging.debug('-' * 30)
-        logging.debug(' '.join(['    Identifer found >','ZCZC']))
+        logging.debug(' '.join(['    Identifer found >', 'ZCZC']))
         S1, S2 = None, None
         try:
-            S1,S2=same[msgidx:].split('+')
+            S1, S2=same[msgidx:].split('+')
         except:
             format_error()
             return           
         try:
-            ZCZC, ORG, EEE, PSSCCC=S1.split('-',3)
+            ZCZC, ORG, EEE, PSSCCC=S1.split('-', 3)
         except:
             format_error()
             return
-        logging.debug(' '.join(['   Originator found >',ORG]))
-        logging.debug(' '.join(['   Event Code found >',EEE]))
+        logging.debug(' '.join(['   Originator found >', ORG]))
+        logging.debug(' '.join(['   Event Code found >', EEE]))
         try:
             PSSCCC_list=PSSCCC.split('-')
         except:
             format_error()
         
         try:
-            TTTT,JJJHHMM,LLLLLLLL,tail=S2.split('-')
+            TTTT, JJJHHMM, LLLLLLLL, tail=S2.split('-')
         except:
             format_error()
             return
-        logging.debug(' '.join(['   Purge Time found >',TTTT]))
-        logging.debug(' '.join(['    Date Code found >',JJJHHMM]))
-        logging.debug(' '.join(['Location Code found >',LLLLLLLL]))
+        logging.debug(' '.join(['   Purge Time found >', TTTT]))
+        logging.debug(' '.join(['    Date Code found >', JJJHHMM]))
+        logging.debug(' '.join(['Location Code found >', LLLLLLLL]))
         try:
-            STATION, TYPE=LLLLLLLL.split('/',1)
+            STATION, TYPE=LLLLLLLL.split('/', 1)
         except:
             STATION, TYPE= None, None
             format_error()
-        logging.debug(' '.join(['   SAME Codes found >',str(len(PSSCCC_list))]))
+        logging.debug(' '.join(['   SAME Codes found >', str(len(PSSCCC_list))]))
         US_bad_list=[]
         CA_bad_list=[]
         for code in PSSCCC_list:
@@ -243,8 +243,8 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
             bad_list=CA_bad_list
         else:
             bad_list=US_bad_list
-        logging.debug(' '.join(['Invalid Codes found >',str(len(bad_list))]))
-        logging.debug(' '.join(['            Country >',COUNTRY]))
+        logging.debug(' '.join(['Invalid Codes found >', str(len(bad_list))]))
+        logging.debug(' '.join(['            Country >', COUNTRY]))
         logging.debug('-' * 30)
         for code in bad_list:
             PSSCCC_list.remove(code)
@@ -257,7 +257,7 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
             if jsonfile:
                 try:
                     import json
-                    data=kwdict(ORG=ORG, EEE=EEE, TTTT=TTTT, JJJHHMM=JJJHHMM, STATION=STATION, TYPE=TYPE, LLLLLLLL=LLLLLLLL, COUNTRY=COUNTRY, LANG=lang, event=get_event(EEE), type=get_indicator(EEE), end=fn_dt(alert_end(JJJHHMM,TTTT)), start=fn_dt(alert_start(JJJHHMM)), organization=defs.SAME__ORG[ORG]['NAME'][COUNTRY], PSSCCC=PSSCCC, PSSCCC_list=PSSCCC_list, location=get_location(STATION, TYPE), date=fn_dt(datetime.datetime.now(),'%c'), length=get_length(TTTT), seconds=alert_length(TTTT), MESSAGE=MESSAGE)
+                    data=kwdict(ORG=ORG, EEE=EEE, TTTT=TTTT, JJJHHMM=JJJHHMM, STATION=STATION, TYPE=TYPE, LLLLLLLL=LLLLLLLL, COUNTRY=COUNTRY, LANG=lang, event=get_event(EEE), type=get_indicator(EEE), end=fn_dt(alert_end(JJJHHMM, TTTT)), start=fn_dt(alert_start(JJJHHMM)), organization=defs.SAME__ORG[ORG]['NAME'][COUNTRY], PSSCCC=PSSCCC, PSSCCC_list=PSSCCC_list, location=get_location(STATION, TYPE), date=fn_dt(datetime.datetime.now(), '%c'), length=get_length(TTTT), seconds=alert_length(TTTT), MESSAGE=MESSAGE)
                     with open(jsonfile, 'w') as outfile:
                         json.dump(data, outfile)               
                 except Exception as detail:
@@ -282,7 +282,7 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
         if msgidx == -1:
             logging.warning('Valid identifer not found.')
         else:
-            logging.debug(' '.join(['End of Message found >','NNNN',str(msgidx)]))
+            logging.debug(' '.join(['End of Message found >', 'NNNN', str(msgidx)]))
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description=defs.DESCRIPTION, prog=defs.PROGRAM,  fromfile_prefix_chars='@')
@@ -293,7 +293,7 @@ def parse_arguments():
     parser.add_argument('--loglevel', default=40, type=int, choices=[10, 20, 30, 40, 50], help='set log level')
     parser.add_argument('--text', dest='text', action='store_true', help='output readable message')
     parser.add_argument('--no-text', dest='text', action='store_false', help='disable readable message')
-    parser.add_argument('--version', action='version', version=' '.join([defs.PROGRAM, defs.VERSION]),help='show version infomation and exit')
+    parser.add_argument('--version', action='version', version=' '.join([defs.PROGRAM, defs.VERSION]), help='show version infomation and exit')
     parser.add_argument('--call', help='call external command')
     parser.add_argument('--command', nargs='*', help='command message')
     parser.add_argument('--json', help='write to json file')
@@ -304,7 +304,7 @@ def parse_arguments():
     
 def main():
     args=parse_arguments()
-    logging.basicConfig(level=args.loglevel,format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=args.loglevel, format='%(levelname)s: %(message)s')
     if args.msg:
         same_decode(args.msg, args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
     elif args.source:
@@ -316,13 +316,13 @@ def main():
         while True:
             line = source_process.stdout.readline()
             if line:
-                logging.debug(line)
-                same_decode(line, args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
+                logging.debug(line.decode("utf8").strip())
+                same_decode(line.decode("utf8").strip(), args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
     else:
         while True:
             for line in sys.stdin:
-                logging.debug(line)
-                same_decode(line, args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
+                logging.debug(line.decode("utf8").strip())
+                same_decode(line.decode("utf8").strip(), args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
 
 
 if __name__ == "__main__":

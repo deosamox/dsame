@@ -42,3 +42,23 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.pyc
+dsame.bat
+source.bat
+multimon-ng/cygwin1.dll
+multimon-ng/multimon-ng.exe
+multimon-ng/README.md
+rtl-sdr-release/convenience_static.lib
+rtl-sdr-release/libusb-1.0.dll
+rtl-sdr-release/pthreadVC2-w64.dll
+rtl-sdr-release/rtl_adsb.exe
+rtl-sdr-release/rtl_eeprom.exe
+rtl-sdr-release/rtl_fm.exe
+rtl-sdr-release/rtl_power.exe
+rtl-sdr-release/rtl_sdr.exe
+rtl-sdr-release/rtl_tcp.exe
+rtl-sdr-release/rtl_test.exe
+rtl-sdr-release/rtlsdr.dll
+rtl-sdr-release/rtlsdr.lib
+rtl-sdr-release/rtlsdr_static.lib
+*.bak
+msg.bat
