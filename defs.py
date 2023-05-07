@@ -5788,6 +5788,10 @@ CA_SAME_CODE={
     'XXXXX' : 'TEST',
 }
 
+MX_SAME_CODE={
+    '000000' : 'Mexico',
+}
+
 SAME_LOCA={
     '0' : None,
     '1' : 'Northwest', 
@@ -5816,7 +5820,7 @@ SAME_CTYB=['SAME1', 'SAME2']
 SAME__ORG={
     '' : None,
     'EAS' : {'NAME' : {'US' : 'Broadcast station or cable system', 'CA' : 'Broadcast station or cable system'}, 'PLURAL' : False, 'ARTICLE' : {'US' :'A', 'CA' : 'A'}},
-    'CIV' : {'NAME' : {'US' : 'Civil authorities', 'CA' : 'Civil authorities'}, 'PLURAL' : True, 'ARTICLE' : {'US' :'THE', 'CA' : 'THE'}},
+    'CIV' : {'NAME' : {'US' : 'Civil authorities', 'CA' : 'Civil authorities', 'MX' : "Mexican authorities"}, 'PLURAL' : True, 'ARTICLE' : {'US' : 'THE', 'CA' : 'THE', "MX" : "THE"}},
     'WXR' : {'NAME' : {'US' : 'National Weather Service', 'CA' : 'Environment Canada'}, 'PLURAL' : False, 'ARTICLE' : {'US' :'THE', 'CA' : ''}},
     'PEP' : {'NAME' : {'US' : 'Primary Entry Point System', 'CA' : 'Primary Entry Point System'}, 'PLURAL' : False, 'ARTICLE' : {'US' :'THE', 'CA' : 'THE'}},
     'EAN' : {'NAME' : {'US' : 'Emergency Action Notification Network ', 'CA' : 'Emergency Action Notification Network '}, 'PLURAL' : False, 'ARTICLE' : {'US' :'THE', 'CA' : 'THE'}},

@@ -50,6 +50,8 @@ def get_length(TTTT):
 def county_decode(input, COUNTRY):
     """Convert SAME county/geographic code to text list"""
     P, SS, CCC, SSCCC=input[:1], input[1:3], input[3:], input[1:]
+    if COUNTRY=='MX':
+        return ['ALL','Mexico']
     if COUNTRY=='US':
         if SSCCC in defs.SAME_CTYB:
             SAME__LOC=defs.SAME_LOCB
@@ -186,7 +188,7 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
     msgidx=same.find('ZCZC')
     if msgidx != -1:
         logging.debug('-' * 30)
-        logging.debug(' '.join(['    Identifer found >', 'ZCZC']))
+        logging.debug(' '.join(['    Identifier found >', 'ZCZC']))
         S1, S2 = None, None
         try:
             S1, S2=same[msgidx:].split('+')
@@ -221,28 +223,35 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
         logging.debug(' '.join(['   SAME Codes found >', str(len(PSSCCC_list))]))
         US_bad_list=[]
         CA_bad_list=[]
-        for code in PSSCCC_list:
-            try:
-                county=defs.US_SAME_CODE[code[1:]]
-            except KeyError:
-                US_bad_list.append(code)
-            try:
-                county=defs.CA_SAME_CODE[code[1:]]
-            except KeyError:
-                CA_bad_list.append(code)
-        if len(US_bad_list) < len(CA_bad_list):
-            COUNTRY='US'
-        if len(US_bad_list) > len(CA_bad_list):
-            COUNTRY='CA'
-        if len(US_bad_list) == len(CA_bad_list):
-            if type=='CA':
-                COUNTRY='CA'
-            else:
+        MX_bad_list=[]
+
+        if PSSCCC_list[0] == '000000' :
+            COUNTRY='MX'
+        else:
+            for code in PSSCCC_list:
+                try:
+                    county=defs.US_SAME_CODE[code[1:]]
+                except KeyError:
+                    US_bad_list.append(code)
+                try:
+                    county=defs.CA_SAME_CODE[code[1:]]
+                except KeyError:
+                    CA_bad_list.append(code)      
+            if len(US_bad_list) < len(CA_bad_list):
                 COUNTRY='US'
+            if len(US_bad_list) > len(CA_bad_list):
+                COUNTRY='CA'
+            if len(US_bad_list) == len(CA_bad_list):
+                if type=='CA':
+                    COUNTRY='CA'
+                else:
+                    COUNTRY='US'
         if COUNTRY=='CA':
             bad_list=CA_bad_list
-        else:
+        if COUNTRY=='US':
             bad_list=US_bad_list
+        if COUNTRY=='MX':
+            bad_list=MX_bad_list
         logging.debug(' '.join(['Invalid Codes found >', str(len(bad_list))]))
         logging.debug(' '.join(['            Country >', COUNTRY]))
         logging.debug('-' * 30)
@@ -280,7 +289,7 @@ def same_decode(same, lang, same_watch=None, event_watch=None, text=True, call=N
     else:
         msgidx=same.find('NNNN')
         if msgidx == -1:
-            logging.warning('Valid identifer not found.')
+            logging.warning('Valid identifier not found.')
         else:
             logging.debug(' '.join(['End of Message found >', 'NNNN', str(msgidx)]))
 
@@ -314,15 +323,15 @@ def main():
                 logging.error(detail)
                 return
         while True:
-            line = source_process.stdout.readline()
+            line = source_process.stdout.readline().decode("utf8").strip()
             if line:
-                logging.debug(line.decode("utf8").strip())
-                same_decode(line.decode("utf8").strip(), args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
+                logging.debug(line)
+                same_decode(line, args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
     else:
         while True:
             for line in sys.stdin:
-                logging.debug(line.decode("utf8").strip())
-                same_decode(line.decode("utf8").strip(), args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
+                logging.debug(line)
+                same_decode(line, args.lang, same_watch=args.same, event_watch=args.event, text=args.text, call=args.call, command=args.command, jsonfile=args.json)
 
 
 if __name__ == "__main__":
